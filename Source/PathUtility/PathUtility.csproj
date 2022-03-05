@@ -7,7 +7,7 @@
 
   <PropertyGroup>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <Description>パス関連処理を詰め合わせたライブラリです。</Description>
+    <Description>パス関連処理の詰め合わせです。</Description>
     <PackageTags>Path</PackageTags>
   </PropertyGroup>
 
