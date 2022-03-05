@@ -12,6 +12,8 @@ public static class ZPath
     // GUIDは36文字（ハイフンあり）
     const int GuidLength = 32 + 4;
 
+    const string TempExtension = ".tmp";
+
     /// <summary>
     /// 拡張子なしの一時ファイル名を取得します。
     /// </summary>
@@ -37,7 +39,7 @@ public static class ZPath
     /// </summary>
     /// <returns>一時ファイル名を返します。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string GetTempFileName() => GetTempFileNameInternal(".tmp");
+    public static string GetTempFileName() => GetTempFileNameInternal(TempExtension);
 
     /// <summary>
     /// 一時ファイル名を取得します。
@@ -59,19 +61,31 @@ public static class ZPath
     /// <summary>
     /// 一時ファイル名を取得します。
     /// </summary>
-    /// <param name="extension">拡張子</param>
     /// <param name="destination">一時ファイル名</param>
+    /// <exception cref="ArgumentOutOfRangeException">バッファーサイズが不足しています。</exception>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static void GetTempFileName(Span<char> destination)
+    {
+        Guard.IsInRangeFor(GuidLength + 2 - 1, destination, nameof(destination));
+        GetTempFileNameInternal(destination, TempExtension);
+    }
+
+    /// <summary>
+    /// 一時ファイル名を取得します。
+    /// </summary>
+    /// <param name="destination">一時ファイル名</param>
+    /// <param name="extension">拡張子</param>
     /// <exception cref="ArgumentException">拡張子が空文字または先頭の文字が「.」ではありません。</exception>
     /// <exception cref="ArgumentOutOfRangeException">「.」を含む拡張子の長さが1以下またはバッファーサイズが不足しています。</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void GetTempFileName(ReadOnlySpan<char> extension, Span<char> destination)
+    public static void GetTempFileName(Span<char> destination, ReadOnlySpan<char> extension)
     {
+        Guard.IsInRangeFor(GuidLength + 2 - 1, destination, nameof(destination));
         Guard.IsNotEmpty(extension, nameof(extension));
         Guard.IsInRangeFor(1, extension, nameof(extension));
         Guard.IsEqualTo(extension[0], '.', nameof(extension));
-        Guard.IsInRangeFor(GuidLength + 2 - 1, destination, nameof(destination));
 
-        GetTempFileNameInternal(extension, destination);
+        GetTempFileNameInternal(destination, extension);
     }
 
     /// <summary>
@@ -98,7 +112,7 @@ public static class ZPath
 
         try
         {
-            GetTempFileNameInternal(extension, buffer);
+            GetTempFileNameInternal(buffer, extension);
             return Path.Join(Path.GetTempPath(), buffer);
         }
         finally
@@ -130,7 +144,7 @@ public static class ZPath
 
         try
         {
-            GetTempFileNameInternal(extension, buffer);
+            GetTempFileNameInternal(buffer, extension);
         }
         finally
         {
@@ -144,7 +158,7 @@ public static class ZPath
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    static void GetTempFileNameInternal(ReadOnlySpan<char> extension, Span<char> destination)
+    static void GetTempFileNameInternal(Span<char> destination, ReadOnlySpan<char> extension)
     {
         GetTempFileNameWithoutExtensionInternal(destination);
         extension.CopyTo(destination[GuidLength..]);

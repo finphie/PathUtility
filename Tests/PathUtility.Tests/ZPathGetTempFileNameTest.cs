@@ -29,12 +29,25 @@ public sealed class ZPathGetTempFileNameTest
     }
 
     [Fact]
+    public void 拡張子指定なしかつバッファーサイズ40以上_ファイル名を返す()
+    {
+        const string Extension = ".tmp";
+
+        Span<char> buffer = new char[32 + 4 + 4];
+        ZPath.GetTempFileName(buffer);
+
+        var fileName = buffer.ToString();
+        fileName.Should().EndWith(Extension);
+        Guid.TryParse(buffer[..^Extension.Length], out _).Should().BeTrue();
+    }
+
+    [Fact]
     public void 有効な拡張子かつバッファーサイズ38以上_ファイル名を返す()
     {
         const string Extension = ".a";
 
         Span<char> buffer = new char[MinLength];
-        ZPath.GetTempFileName(Extension, buffer);
+        ZPath.GetTempFileName(buffer, Extension);
 
         var fileName = buffer.ToString();
         fileName.Should().EndWith(Extension);
@@ -51,7 +64,7 @@ public sealed class ZPathGetTempFileNameTest
         FluentActions.Invoking(() =>
         {
             var buffer = new char[MinLength];
-            ZPath.GetTempFileName(extension, buffer);
+            ZPath.GetTempFileName(buffer, extension);
 
             return buffer;
         }).Should().Throw<ArgumentException>();
@@ -63,7 +76,7 @@ public sealed class ZPathGetTempFileNameTest
         FluentActions.Invoking(() =>
         {
             var buffer = new char[MinLength - 1];
-            ZPath.GetTempFileName(".a", buffer);
+            ZPath.GetTempFileName(buffer, ".a");
 
             return buffer;
         }).Should().Throw<ArgumentException>();
