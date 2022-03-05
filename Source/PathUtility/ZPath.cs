@@ -49,6 +49,13 @@ public static class ZPath
     /// <summary>
     /// 指定された拡張子の一時ファイルパスを取得します。
     /// </summary>
+    /// <returns>指定された拡張子の一時ファイルパスを返します。</returns>
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    public static string GetTempFilePath() => GetTempFilePathInternal(TempExtension);
+
+    /// <summary>
+    /// 指定された拡張子の一時ファイルパスを取得します。
+    /// </summary>
     /// <param name="extension">拡張子</param>
     /// <returns>指定された拡張子の一時ファイルパスを返します。</returns>
     /// <exception cref="ArgumentException">拡張子が空文字または先頭の文字が"."ではありません。</exception>
@@ -60,26 +67,7 @@ public static class ZPath
         Guard.IsInRangeFor(1, extension, nameof(extension));
         Guard.IsEqualTo(extension[0], '.', nameof(extension));
 
-        const int StackallocThreshold = 512;
-
-        var length = GuidLength + extension.Length;
-        char[]? pool = null;
-        Span<char> buffer = length <= StackallocThreshold
-            ? stackalloc char[GuidLength + extension.Length]
-            : (pool = ArrayPool<char>.Shared.Rent(length));
-
-        try
-        {
-            GetTempFileNameInternal(buffer, extension);
-            return Path.Join(Path.GetTempPath(), buffer);
-        }
-        finally
-        {
-            if (pool is not null)
-            {
-                ArrayPool<char>.Shared.Return(pool);
-            }
-        }
+        return GetTempFilePathInternal(extension);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -120,5 +108,30 @@ public static class ZPath
     {
         GetTempFileNameWithoutExtensionInternal(destination);
         extension.CopyTo(destination[GuidLength..]);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static string GetTempFilePathInternal(ReadOnlySpan<char> extension)
+    {
+        const int StackallocThreshold = 512;
+
+        var length = GuidLength + extension.Length;
+        char[]? pool = null;
+        Span<char> buffer = length <= StackallocThreshold
+            ? stackalloc char[GuidLength + extension.Length]
+            : (pool = ArrayPool<char>.Shared.Rent(length));
+
+        try
+        {
+            GetTempFileNameInternal(buffer, extension);
+            return Path.Join(Path.GetTempPath(), buffer);
+        }
+        finally
+        {
+            if (pool is not null)
+            {
+                ArrayPool<char>.Shared.Return(pool);
+            }
+        }
     }
 }
