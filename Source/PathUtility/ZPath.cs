@@ -24,7 +24,7 @@ public static class ZPath
     /// 拡張子なしの一時ファイル名を取得します。
     /// </summary>
     /// <param name="destination">拡張子なしの一時ファイル名</param>
-    /// <exception cref="ArgumentOutOfRangeException">バッファサイズが不足しています。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">バッファーサイズが不足しています。</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void GetTempFileNameWithoutExtension(Span<char> destination)
     {
@@ -62,7 +62,7 @@ public static class ZPath
     /// <param name="extension">拡張子</param>
     /// <param name="destination">一時ファイル名</param>
     /// <exception cref="ArgumentException">拡張子が空文字または先頭の文字が「.」ではありません。</exception>
-    /// <exception cref="ArgumentOutOfRangeException">「.」を含む拡張子の長さが1以下またはバッファサイズが不足しています。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">「.」を含む拡張子の長さが1以下またはバッファーサイズが不足しています。</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static void GetTempFileName(ReadOnlySpan<char> extension, Span<char> destination)
     {

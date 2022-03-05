@@ -8,11 +8,11 @@ public sealed class ZPathGetTempFileNameWithoutExtensionTest
     const int MinLength = 36;
 
     [Fact]
-    public void バッファ指定なし_ファイル名を返す()
+    public void バッファー指定なし_ファイル名を返す()
         => Guid.TryParse(ZPath.GetTempFileNameWithoutExtension(), out _).Should().BeTrue();
 
     [Fact]
-    public void バッファサイズ36以上_ファイル名を返す()
+    public void バッファーサイズ36以上_ファイル名を返す()
     {
         var buffer = new char[MinLength];
         ZPath.GetTempFileNameWithoutExtension(buffer);
@@ -21,7 +21,7 @@ public sealed class ZPathGetTempFileNameWithoutExtensionTest
     }
 
     [Fact]
-    public void 長さ36未満のバッファ_Error()
+    public void 長さ36未満のバッファー_Error()
     {
         FluentActions.Invoking(() =>
         {

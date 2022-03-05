@@ -8,7 +8,7 @@ public sealed class ZPathGetTempFileNameTest
     const int MinLength = 38;
 
     [Fact]
-    public void 拡張子及びバッファ指定なし_ファイル名を返す()
+    public void 拡張子及びバッファー指定なし_ファイル名を返す()
     {
         const string Extension = ".tmp";
         var fileName = ZPath.GetTempFileName();
@@ -20,7 +20,7 @@ public sealed class ZPathGetTempFileNameTest
     [Theory]
     [InlineData(".a")]
     [InlineData(".abc")]
-    public void 有効な拡張子かつバッファ指定なし_ファイル名を返す(string extension)
+    public void 有効な拡張子かつバッファー指定なし_ファイル名を返す(string extension)
     {
         var fileName = ZPath.GetTempFileName(extension);
 
@@ -29,7 +29,7 @@ public sealed class ZPathGetTempFileNameTest
     }
 
     [Fact]
-    public void 有効な拡張子かつバッファサイズ38以上_ファイル名を返す()
+    public void 有効な拡張子かつバッファーサイズ38以上_ファイル名を返す()
     {
         const string Extension = ".a";
 
@@ -58,7 +58,7 @@ public sealed class ZPathGetTempFileNameTest
     }
 
     [Fact]
-    public void バッファサイズ38未満_Error()
+    public void バッファーサイズ38未満_Error()
     {
         FluentActions.Invoking(() =>
         {
