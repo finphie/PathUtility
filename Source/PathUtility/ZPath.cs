@@ -91,6 +91,7 @@ public static class ZPath
         try
         {
             GetTempFileNameInternal(buffer, extension);
+            return buffer.ToString();
         }
         finally
         {
@@ -99,8 +100,6 @@ public static class ZPath
                 ArrayPool<char>.Shared.Return(pool);
             }
         }
-
-        return buffer.ToString();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
