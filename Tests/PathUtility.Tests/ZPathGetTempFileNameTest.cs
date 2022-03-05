@@ -3,7 +3,7 @@ using Xunit;
 
 namespace PathUtility.Tests;
 
-public sealed class PathHelperGetTempFileNameTest
+public sealed class ZPathGetTempFileNameTest
 {
     const int MinLength = 38;
 
@@ -11,7 +11,7 @@ public sealed class PathHelperGetTempFileNameTest
     public void 拡張子及びバッファ指定なし_ファイル名を返す()
     {
         const string Extension = ".tmp";
-        var fileName = PathHelper.GetTempFileName();
+        var fileName = ZPath.GetTempFileName();
 
         fileName.Should().EndWith(Extension);
         Guid.TryParse(fileName[..^Extension.Length], out _).Should().BeTrue();
@@ -22,7 +22,7 @@ public sealed class PathHelperGetTempFileNameTest
     [InlineData(".abc")]
     public void 有効な拡張子かつバッファ指定なし_ファイル名を返す(string extension)
     {
-        var fileName = PathHelper.GetTempFileName(extension);
+        var fileName = ZPath.GetTempFileName(extension);
 
         fileName.Should().EndWith(extension);
         Guid.TryParse(fileName[..^extension.Length], out _).Should().BeTrue();
@@ -34,7 +34,7 @@ public sealed class PathHelperGetTempFileNameTest
         const string Extension = ".a";
 
         Span<char> buffer = new char[MinLength];
-        PathHelper.GetTempFileName(Extension, buffer);
+        ZPath.GetTempFileName(Extension, buffer);
 
         var fileName = buffer.ToString();
         fileName.Should().EndWith(Extension);
@@ -47,11 +47,11 @@ public sealed class PathHelperGetTempFileNameTest
     [InlineData("a")]
     public void 不正な拡張子_Error(string extension)
     {
-        FluentActions.Invoking(() => PathHelper.GetTempFileName(extension)).Should().Throw<ArgumentException>();
+        FluentActions.Invoking(() => ZPath.GetTempFileName(extension)).Should().Throw<ArgumentException>();
         FluentActions.Invoking(() =>
         {
             var buffer = new char[MinLength];
-            PathHelper.GetTempFileName(extension, buffer);
+            ZPath.GetTempFileName(extension, buffer);
 
             return buffer;
         }).Should().Throw<ArgumentException>();
@@ -63,7 +63,7 @@ public sealed class PathHelperGetTempFileNameTest
         FluentActions.Invoking(() =>
         {
             var buffer = new char[MinLength - 1];
-            PathHelper.GetTempFileName(".a", buffer);
+            ZPath.GetTempFileName(".a", buffer);
 
             return buffer;
         }).Should().Throw<ArgumentException>();

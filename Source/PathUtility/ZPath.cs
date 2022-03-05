@@ -5,9 +5,9 @@ using CommunityToolkit.Diagnostics;
 namespace PathUtility;
 
 /// <summary>
-/// パス関連のヘルパークラスです。
+/// パス関連の処理を行うクラスです。
 /// </summary>
-public static class PathHelper
+public static class ZPath
 {
     // GUIDは36文字（ハイフンあり）
     const int GuidLength = 32 + 4;

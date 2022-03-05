@@ -3,14 +3,14 @@ using Xunit;
 
 namespace PathUtility.Tests;
 
-public sealed class PathHelperGetTempFilePathTest
+public sealed class ZPathGetTempFilePathTest
 {
     [Theory]
     [InlineData(".a")]
     [InlineData(".abc")]
     public void 有効な拡張子_ファイルパスを返す(string extension)
     {
-        var filePath = PathHelper.GetTempFilePath(extension);
+        var filePath = ZPath.GetTempFilePath(extension);
         Path.IsPathFullyQualified(filePath).Should().BeTrue();
     }
 
@@ -19,5 +19,5 @@ public sealed class PathHelperGetTempFilePathTest
     [InlineData(".")]
     [InlineData("a")]
     public void 不正な拡張子_Error(string extension)
-        => FluentActions.Invoking(() => PathHelper.GetTempFilePath(extension)).Should().Throw<ArgumentException>();
+        => FluentActions.Invoking(() => ZPath.GetTempFilePath(extension)).Should().Throw<ArgumentException>();
 }
