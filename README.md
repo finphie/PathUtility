@@ -33,7 +33,8 @@ var tempFileNameWithoutExtension = ZPath.GetTempFileNameWithoutExtension();
 var tempFileName1 = ZPath.GetTempFileName();
 var tempFileName2 = ZPath.GetTempFileName(".cs");
 
-var tempFilePath = ZPath.GetTempFilePath(".cs");
+var tempFilePath1 = ZPath.GetTempFilePath();
+var tempFilePath2 = ZPath.GetTempFilePath(".cs");
 ```
 
 ## サポートフレームワーク
