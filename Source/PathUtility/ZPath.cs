@@ -34,8 +34,8 @@ public static class ZPath
     /// </summary>
     /// <param name="extension">拡張子</param>
     /// <returns>一時ファイル名を返します。</returns>
-    /// <exception cref="ArgumentException">拡張子が空文字または先頭の文字が「.」ではありません。</exception>
-    /// <exception cref="ArgumentOutOfRangeException">「.」を含む拡張子の長さが1以下です。</exception>
+    /// <exception cref="ArgumentException">拡張子が空文字または先頭の文字が"."ではありません。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">"."を含む拡張子の長さが1以下です。</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string GetTempFileName(ReadOnlySpan<char> extension)
     {
@@ -51,8 +51,8 @@ public static class ZPath
     /// </summary>
     /// <param name="extension">拡張子</param>
     /// <returns>指定された拡張子の一時ファイルパスを返します。</returns>
-    /// <exception cref="ArgumentException">拡張子が空文字または先頭の文字が「.」ではありません。</exception>
-    /// <exception cref="ArgumentOutOfRangeException">「.」を含む拡張子の長さが1以下です。</exception>
+    /// <exception cref="ArgumentException">拡張子が空文字または先頭の文字が"."ではありません。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">"."を含む拡張子の長さが1以下です。</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string GetTempFilePath(ReadOnlySpan<char> extension)
     {
