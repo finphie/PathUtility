@@ -12,6 +12,8 @@ public static class ZPath
     // GUIDは36文字（ハイフンあり）
     const int GuidLength = 32 + 4;
 
+    const string TempExtension = ".tmp";
+
     /// <summary>
     /// 拡張子なしの一時ファイル名を取得します。
     /// </summary>
@@ -21,31 +23,19 @@ public static class ZPath
         => Guid.NewGuid().ToString();
 
     /// <summary>
-    /// 拡張子なしの一時ファイル名を取得します。
-    /// </summary>
-    /// <param name="destination">拡張子なしの一時ファイル名</param>
-    /// <exception cref="ArgumentOutOfRangeException">バッファーサイズが不足しています。</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void GetTempFileNameWithoutExtension(Span<char> destination)
-    {
-        Guard.IsInRangeFor(GuidLength - 1, destination, nameof(destination));
-        GetTempFileNameWithoutExtensionInternal(destination);
-    }
-
-    /// <summary>
     /// 一時ファイル名を取得します。
     /// </summary>
     /// <returns>一時ファイル名を返します。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static string GetTempFileName() => GetTempFileNameInternal(".tmp");
+    public static string GetTempFileName() => GetTempFileNameInternal(TempExtension);
 
     /// <summary>
     /// 一時ファイル名を取得します。
     /// </summary>
     /// <param name="extension">拡張子</param>
     /// <returns>一時ファイル名を返します。</returns>
-    /// <exception cref="ArgumentException">拡張子が空文字または先頭の文字が「.」ではありません。</exception>
-    /// <exception cref="ArgumentOutOfRangeException">「.」を含む拡張子の長さが1以下です。</exception>
+    /// <exception cref="ArgumentException">拡張子が空文字または先頭の文字が"."ではありません。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">"."を含む拡張子の長さが1以下です。</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string GetTempFileName(ReadOnlySpan<char> extension)
     {
@@ -57,30 +47,19 @@ public static class ZPath
     }
 
     /// <summary>
-    /// 一時ファイル名を取得します。
+    /// 指定された拡張子の一時ファイルパスを取得します。
     /// </summary>
-    /// <param name="extension">拡張子</param>
-    /// <param name="destination">一時ファイル名</param>
-    /// <exception cref="ArgumentException">拡張子が空文字または先頭の文字が「.」ではありません。</exception>
-    /// <exception cref="ArgumentOutOfRangeException">「.」を含む拡張子の長さが1以下またはバッファーサイズが不足しています。</exception>
+    /// <returns>指定された拡張子の一時ファイルパスを返します。</returns>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void GetTempFileName(ReadOnlySpan<char> extension, Span<char> destination)
-    {
-        Guard.IsNotEmpty(extension, nameof(extension));
-        Guard.IsInRangeFor(1, extension, nameof(extension));
-        Guard.IsEqualTo(extension[0], '.', nameof(extension));
-        Guard.IsInRangeFor(GuidLength + 2 - 1, destination, nameof(destination));
-
-        GetTempFileNameInternal(extension, destination);
-    }
+    public static string GetTempFilePath() => GetTempFilePathInternal(TempExtension);
 
     /// <summary>
     /// 指定された拡張子の一時ファイルパスを取得します。
     /// </summary>
     /// <param name="extension">拡張子</param>
     /// <returns>指定された拡張子の一時ファイルパスを返します。</returns>
-    /// <exception cref="ArgumentException">拡張子が空文字または先頭の文字が「.」ではありません。</exception>
-    /// <exception cref="ArgumentOutOfRangeException">「.」を含む拡張子の長さが1以下です。</exception>
+    /// <exception cref="ArgumentException">拡張子が空文字または先頭の文字が"."ではありません。</exception>
+    /// <exception cref="ArgumentOutOfRangeException">"."を含む拡張子の長さが1以下です。</exception>
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
     public static string GetTempFilePath(ReadOnlySpan<char> extension)
     {
@@ -88,26 +67,7 @@ public static class ZPath
         Guard.IsInRangeFor(1, extension, nameof(extension));
         Guard.IsEqualTo(extension[0], '.', nameof(extension));
 
-        const int StackallocThreshold = 512;
-
-        var length = GuidLength + extension.Length;
-        char[]? pool = null;
-        Span<char> buffer = length <= StackallocThreshold
-            ? stackalloc char[GuidLength + extension.Length]
-            : (pool = ArrayPool<char>.Shared.Rent(length));
-
-        try
-        {
-            GetTempFileNameInternal(extension, buffer);
-            return Path.Join(Path.GetTempPath(), buffer);
-        }
-        finally
-        {
-            if (pool is not null)
-            {
-                ArrayPool<char>.Shared.Return(pool);
-            }
-        }
+        return GetTempFilePathInternal(extension);
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -130,7 +90,8 @@ public static class ZPath
 
         try
         {
-            GetTempFileNameInternal(extension, buffer);
+            GetTempFileNameInternal(buffer, extension);
+            return buffer.ToString();
         }
         finally
         {
@@ -139,14 +100,37 @@ public static class ZPath
                 ArrayPool<char>.Shared.Return(pool);
             }
         }
-
-        return buffer.ToString();
     }
 
     [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    static void GetTempFileNameInternal(ReadOnlySpan<char> extension, Span<char> destination)
+    static void GetTempFileNameInternal(Span<char> destination, ReadOnlySpan<char> extension)
     {
         GetTempFileNameWithoutExtensionInternal(destination);
         extension.CopyTo(destination[GuidLength..]);
+    }
+
+    [MethodImpl(MethodImplOptions.AggressiveInlining)]
+    static string GetTempFilePathInternal(ReadOnlySpan<char> extension)
+    {
+        const int StackallocThreshold = 512;
+
+        var length = GuidLength + extension.Length;
+        char[]? pool = null;
+        Span<char> buffer = length <= StackallocThreshold
+            ? stackalloc char[GuidLength + extension.Length]
+            : (pool = ArrayPool<char>.Shared.Rent(length));
+
+        try
+        {
+            GetTempFileNameInternal(buffer, extension);
+            return Path.Join(Path.GetTempPath(), buffer);
+        }
+        finally
+        {
+            if (pool is not null)
+            {
+                ArrayPool<char>.Shared.Return(pool);
+            }
+        }
     }
 }
