@@ -23,18 +23,6 @@ public static class ZPath
         => Guid.NewGuid().ToString();
 
     /// <summary>
-    /// 拡張子なしの一時ファイル名を取得します。
-    /// </summary>
-    /// <param name="destination">拡張子なしの一時ファイル名</param>
-    /// <exception cref="ArgumentOutOfRangeException">バッファーサイズが不足しています。</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void GetTempFileNameWithoutExtension(Span<char> destination)
-    {
-        Guard.IsInRangeFor(GuidLength - 1, destination, nameof(destination));
-        GetTempFileNameWithoutExtensionInternal(destination);
-    }
-
-    /// <summary>
     /// 一時ファイル名を取得します。
     /// </summary>
     /// <returns>一時ファイル名を返します。</returns>
@@ -56,36 +44,6 @@ public static class ZPath
         Guard.IsEqualTo(extension[0], '.', nameof(extension));
 
         return GetTempFileNameInternal(extension);
-    }
-
-    /// <summary>
-    /// 一時ファイル名を取得します。
-    /// </summary>
-    /// <param name="destination">一時ファイル名</param>
-    /// <exception cref="ArgumentOutOfRangeException">バッファーサイズが不足しています。</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void GetTempFileName(Span<char> destination)
-    {
-        Guard.IsInRangeFor(GuidLength + 2 - 1, destination, nameof(destination));
-        GetTempFileNameInternal(destination, TempExtension);
-    }
-
-    /// <summary>
-    /// 一時ファイル名を取得します。
-    /// </summary>
-    /// <param name="destination">一時ファイル名</param>
-    /// <param name="extension">拡張子</param>
-    /// <exception cref="ArgumentException">拡張子が空文字または先頭の文字が「.」ではありません。</exception>
-    /// <exception cref="ArgumentOutOfRangeException">「.」を含む拡張子の長さが1以下またはバッファーサイズが不足しています。</exception>
-    [MethodImpl(MethodImplOptions.AggressiveInlining)]
-    public static void GetTempFileName(Span<char> destination, ReadOnlySpan<char> extension)
-    {
-        Guard.IsInRangeFor(GuidLength + 2 - 1, destination, nameof(destination));
-        Guard.IsNotEmpty(extension, nameof(extension));
-        Guard.IsInRangeFor(1, extension, nameof(extension));
-        Guard.IsEqualTo(extension[0], '.', nameof(extension));
-
-        GetTempFileNameInternal(destination, extension);
     }
 
     /// <summary>
