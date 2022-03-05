@@ -2,6 +2,7 @@
 
 [![Build(.NET)](https://github.com/finphie/PathUtility/actions/workflows/build-dotnet.yml/badge.svg)](https://github.com/finphie/PathUtility/actions/workflows/build-dotnet.yml)
 [![NuGet](https://img.shields.io/nuget/v/PathUtility?color=0078d4&label=NuGet)](https://www.nuget.org/packages/PathUtility/)
+[![Azure Artifacts](https://feeds.dev.azure.com/finphie/7af9aa4d-c550-43af-87a5-01539b2d9934/_apis/public/Packaging/Feeds/18cbb017-6f1d-41eb-b9a5-a6dbf411e3f7/Packages/80f310a7-18a5-4a16-9ba4-8acb8568b580/Badge)](https://dev.azure.com/finphie/Main/_packaging?_a=package&feed=18cbb017-6f1d-41eb-b9a5-a6dbf411e3f7&package=80f310a7-18a5-4a16-9ba4-8acb8568b580&preferRelease=true)
 
 パス関連処理を詰め合わせたライブラリです。
 
