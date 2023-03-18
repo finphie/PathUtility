@@ -6,8 +6,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <Description>パス関連処理の詰め合わせです。</Description>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageTags>Path</PackageTags>
   </PropertyGroup>
 
