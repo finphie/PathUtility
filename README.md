@@ -14,13 +14,13 @@ PathUtilityは、パスの作成などの各種処理を詰め合わせたライ
 
 ### NuGet（正式リリース版）
 
-```console
+```shell
 dotnet add package PathUtility
 ```
 
 ### Azure Artifacts（開発用ビルド）
 
-```console
+```shell
 dotnet add package PathUtility -s https://pkgs.dev.azure.com/finphie/Main/_packaging/DotNet/nuget/v3/index.json
 ```
 
