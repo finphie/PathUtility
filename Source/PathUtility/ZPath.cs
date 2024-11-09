@@ -9,7 +9,6 @@ namespace PathUtility;
 /// </summary>
 public static class ZPath
 {
-    // GUIDは36文字（ハイフンあり）
     const int GuidLength = 32 + 4;
 
     const string TempExtension = ".tmp";
