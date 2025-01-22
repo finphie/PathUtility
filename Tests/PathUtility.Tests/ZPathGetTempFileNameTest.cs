@@ -1,4 +1,4 @@
-﻿using FluentAssertions;
+﻿using Shouldly;
 using Xunit;
 
 namespace PathUtility.Tests;
@@ -11,8 +11,8 @@ public sealed class ZPathGetTempFileNameTest
         const string Extension = ".tmp";
         var fileName = ZPath.GetTempFileName();
 
-        fileName.Should().EndWith(Extension);
-        Guid.TryParse(fileName[..^Extension.Length], out _).Should().BeTrue();
+        fileName.ShouldEndWith(Extension);
+        Guid.TryParse(fileName[..^Extension.Length], out _).ShouldBeTrue();
     }
 
     [Theory]
@@ -22,8 +22,8 @@ public sealed class ZPathGetTempFileNameTest
     {
         var fileName = ZPath.GetTempFileName(extension);
 
-        fileName.Should().EndWith(extension);
-        Guid.TryParse(fileName[..^extension.Length], out _).Should().BeTrue();
+        fileName.ShouldEndWith(extension);
+        Guid.TryParse(fileName[..^extension.Length], out _).ShouldBeTrue();
     }
 
     [Theory]
@@ -31,5 +31,5 @@ public sealed class ZPathGetTempFileNameTest
     [InlineData(".")]
     [InlineData("a")]
     public void 不正な拡張子_Error(string extension)
-        => FluentActions.Invoking(() => ZPath.GetTempFileName(extension)).Should().Throw<ArgumentException>();
+        => Should.Throw<ArgumentException>(() => ZPath.GetTempFileName(extension));
 }
