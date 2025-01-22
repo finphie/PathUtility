@@ -40,8 +40,8 @@ var tempFilePath2 = ZPath.GetTempFilePath(".cs");
 
 ## サポートフレームワーク
 
-- .NET 7
-- .NET 6
+- .NET 9
+- .NET 8
 - .NET Standard 2.1
 
 ## 作者
