@@ -1,0 +1,9 @@
+<Project>
+
+  <Import Project="$([MSBuild]::GetPathOfFileAbove('Directory.Packages.props', '$(MSBuildThisFileDirectory)../'))" />
+
+  <ItemGroup>
+    <PackageVersion Include="CommunityToolkit.Diagnostics" Version="8.4.0" />
+  </ItemGroup>
+
+</Project>
